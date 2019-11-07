@@ -1,0 +1,8 @@
+prefix=/usr/local
+
+Name: camera_models
+Description: Description of camera_models
+Version: 0.0.0
+Cflags: -I/usr/local/include
+Libs: -L/usr/local/lib -lcamera_models
+Requires: roscpp std_msgs

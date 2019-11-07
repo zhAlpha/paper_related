@@ -1,0 +1,23 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+SET(PROJECT_NAME LSM)
+PROJECT(${PROJECT_NAME})
+
+find_package(OpenCV 3 REQUIRED opencv_core opencv_videoio opencv_imgcodecs opencv_imgproc opencv_calib3d opencv_highgui)
+
+if(NOT OpenCV_FOUND)
+   find_package(OpenCV 2.4.3 QUIET)
+   if(NOT OpenCV_FOUND)
+      message(FATAL_ERROR "OpenCV > 2.4.3 not found.")
+   endif()
+endif()
+
+INCLUDE_DIRECTORIES(${OpenCV_INCLUDE_DIRS})
+MESSAGE(STATUS "Project: ${PROJECT_NAME}")
+MESSAGE(STATUS "OpenCV library status:")
+MESSAGE(STATUS "    version: ${OpenCV_VERSION}")
+MESSAGE(STATUS "    libraries: ${OpenCV_LIBS}")
+MESSAGE(STATUS "    include path: ${OpenCV_INCLUDE_DIRS}")
+AUX_SOURCE_DIRECTORY(src DIR_SRCS)
+MESSAGE(STATUS "Src file: ${DIR_SRCS}")
+ADD_EXECUTABLE(${PROJECT_NAME} ${DIR_SRCS})
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${OpenCV_LIBS})

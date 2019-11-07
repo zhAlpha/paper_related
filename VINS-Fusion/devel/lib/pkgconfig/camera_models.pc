@@ -1,0 +1,8 @@
+prefix=/home/zh/VINS-Fusion/devel
+
+Name: camera_models
+Description: Description of camera_models
+Version: 0.0.0
+Cflags: -I/home/zh/VINS-Fusion/camera_models/include
+Libs: -L/home/zh/VINS-Fusion/devel/lib -lcamera_models
+Requires: roscpp std_msgs

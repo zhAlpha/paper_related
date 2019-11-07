@@ -1,0 +1,8 @@
+prefix=/home/zh/VINS-Fusion/devel
+
+Name: global_fusion
+Description: Description of global_fusion
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/zh/VINS-Fusion/devel/lib 
+Requires: 
