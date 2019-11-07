@@ -9,8 +9,13 @@ using namespace cv;
 
 int main(int argc, const char * argv[])
 {
-    Mat imageRGB = imread("/Users/demonfromrussia/Desktop/photo-1480714378408-67cf0d13bc1b.jpg");
-    Mat image = imread("/Users/demonfromrussia/Desktop/photo-1480714378408-67cf0d13bc1b.jpg", 0);
+
+    //Mat imageRGB = imread("/Users/demonfromrussia/Desktop/photo-1480714378408-67cf0d13bc1b.jpg");
+   // Mat image = imread("/Users/demonfromrussia/Desktop/photo-1480714378408-67cf0d13bc1b.jpg", 0);
+
+    Mat imageRGB = imread("argv[1]");
+    Mat image = imread("argv[2]");//, 0);
+
     EDLines lineHandler = EDLines(image);
     Mat outputImage;
     
