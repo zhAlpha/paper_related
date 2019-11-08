@@ -64,7 +64,7 @@
 #include <math.h>
 #include <string.h>
 #include <ctype.h>
-#include "lsd.h"
+#include "../include/lsd.h"
 
 #ifndef FALSE
 #define FALSE 0
