@@ -171,7 +171,7 @@ static void error(char * msg)
 #define RELATIVE_ERROR_FACTOR 100.0
 
 /*----------------------------------------------------------------------------*/
-/** Compare doubles by relative error.
+/** Compare doubles by relative error.通过相对误差来比较doubles
 
     The resulting rounding error after floating point computations
     depend on the specific operations done. The same number computed by
@@ -180,6 +180,10 @@ static void error(char * msg)
     should be considered and compared to a factor times EPS. The factor
     should be related to the cumulated rounding error(累计舍入误差) in the chain of
     computation. Here, as a simplification, a fixed factor is used.
+
+    通过浮点计算后的舍入误差取决于具体完成的操作,相同的数值通过不同的计算方法会有不同的舍入误差,
+    为了更有用的比较,我们需要一个相对舍入误差的评估,和一个因子与EPS相乘的值进行比较,这个因子需要和计算链
+    中的累计舍入误差相关.这里作为简化,使用了修正因子.
 
  */
 static int double_equal(double a, double b)
@@ -199,8 +203,10 @@ static int double_equal(double a, double b)
      smaller numbers, the same quantization steps as for DBL_MIN
      are used. Then, for smaller numbers, a meaningful "relative"
      error should be computed by dividing the difference by DBL_MIN.
-     DBL_MIN是最小的
 
+     DBL_MIN是最小的归一化数字(double类型的最小值),因此,它的相对误差受DBL_EPSILON的约束.
+     为了更小的数字,就可以使用和 DBL_MIN 相同的量化步骤.然后为了更小的数值,"相对"误差可以
+     通过差值除以DBL_MIN来计算得出.
 
 
 
@@ -213,6 +219,7 @@ static int double_equal(double a, double b)
 
 /*----------------------------------------------------------------------------*/
 /** Computes Euclidean distance between point (x1,y1) and point (x2,y2).
+ * 计算点1和点2之间的欧氏距离
  */
 static double dist(double x1, double y1, double x2, double y2)
 {
@@ -222,6 +229,7 @@ static double dist(double x1, double y1, double x2, double y2)
 
 /*----------------------------------------------------------------------------*/
 /*----------------------- 'list of n-tuple' data type ------------------------*/
+/*-----------------------         n元组的数据类型       ------------------------*/
 /*----------------------------------------------------------------------------*/
 
 /*----------------------------------------------------------------------------*/
@@ -232,7 +240,7 @@ static double dist(double x1, double y1, double x2, double y2)
 
       ntl->values[ i + j * ntl->dim ]
 
-    The dimension of the n-tuple (n) is:
+    The dimension(维数) of the n-tuple (n) is:
 
       ntl->dim
 
@@ -252,6 +260,7 @@ typedef struct ntuple_list_s
   unsigned int dim;
   double * values;
 } * ntuple_list;
+//TODO 这是typedef初始化为指针?不用写类型?
 
 /*----------------------------------------------------------------------------*/
 /** Free memory used in n-tuple 'in'.
