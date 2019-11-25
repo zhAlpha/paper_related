@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
+    <generated>
+      <config projectName="opencv_idz" targetName="Opencv_idz" />
+      <config projectName="opencv_idz" targetName="opencv_idz_shared" />
+    </generated>
+  </component>
+  <component name="CMakeSettings" AUTO_RELOAD="true">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ed7bf8f4-8f88-4678-9249-3e37f2249ccf" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeCache.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/3.10.2/CMakeCCompiler.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/3.10.2/CMakeCXXCompiler.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/3.10.2/CMakeDetermineCompilerABI_C.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/3.10.2/CMakeDetermineCompilerABI_CXX.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/3.10.2/CMakeSystem.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/3.10.2/CompilerIdC/CMakeCCompilerId.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/3.10.2/CompilerIdC/a.out" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/3.10.2/CompilerIdCXX/CMakeCXXCompilerId.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/3.10.2/CompilerIdCXX/a.out" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/CMakeDirectoryInformation.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/CMakeOutput.log" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/Makefile.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/Makefile2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/Opencv_idz.dir/CXX.includecache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/Opencv_idz.dir/DependInfo.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/Opencv_idz.dir/build.make" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/Opencv_idz.dir/cmake_clean.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/Opencv_idz.dir/depend.internal" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/Opencv_idz.dir/depend.make" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/Opencv_idz.dir/flags.make" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/Opencv_idz.dir/link.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/Opencv_idz.dir/progress.make" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/TargetDirectories.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/cmake.check_cache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/feature_tests.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/feature_tests.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/feature_tests.cxx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/opencv_idz_shared.dir/CXX.includecache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/opencv_idz_shared.dir/DependInfo.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/opencv_idz_shared.dir/build.make" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/opencv_idz_shared.dir/cmake_clean.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/opencv_idz_shared.dir/cmake_clean_target.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/opencv_idz_shared.dir/depend.internal" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/opencv_idz_shared.dir/depend.make" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/opencv_idz_shared.dir/flags.make" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/opencv_idz_shared.dir/link.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/opencv_idz_shared.dir/progress.make" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/opencv_idz_shared.dir/src/EDLines.cpp.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/progress.marks" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/Makefile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/opencv_idz/build/cmake_install.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../lsd_1.6/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../lsd_1.6/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/opencv_idz/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/opencv_idz/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/opencv_idz/bin/Opencv_idz" beforeDir="false" afterPath="$PROJECT_DIR$/opencv_idz/bin/Opencv_idz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/Opencv_idz.dir/src_bin/main.cpp.o" beforeDir="false" afterPath="$PROJECT_DIR$/opencv_idz/build/CMakeFiles/Opencv_idz.dir/src_bin/main.cpp.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/opencv_idz/lib/libopencv_idz_shared.a" beforeDir="false" afterPath="$PROJECT_DIR$/opencv_idz/lib/libopencv_idz_shared.a" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="DatabaseView">
+    <option name="SHOW_INTERMEDIATE" value="true" />
+    <option name="GROUP_DATA_SOURCES" value="true" />
+    <option name="GROUP_SCHEMA" value="true" />
+    <option name="GROUP_CONTENTS" value="false" />
+    <option name="SORT_POSITIONED" value="false" />
+    <option name="SHOW_EMPTY_GROUPS" value="false" />
+    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
+    <option name="HIDDEN_KINDS">
+      <set />
+    </option>
+    <expand />
+    <select />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="IgnoredFileRootStore">
+    <option name="generatedRoots">
+      <set>
+        <option value="$PROJECT_DIR$/.idea" />
+      </set>
+    </option>
+  </component>
+  <component name="ProjectId" id="1THyU4XVx2L3AFVfvRJdVkoNMSt" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/opencv_idz" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/opencv_idz/bin" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="CMake 应用程序.Opencv_idz">
+    <configuration name="Opencv_idz" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="opencv_idz" TARGET_NAME="Opencv_idz" RUN_TARGET_PROJECT_NAME="opencv_idz" RUN_TARGET_NAME="Opencv_idz">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="opencv_idz_shared" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="opencv_idz" TARGET_NAME="opencv_idz_shared" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="CMake 应用程序.Opencv_idz" />
+      <item itemvalue="CMake 应用程序.opencv_idz_shared" />
+    </list>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ed7bf8f4-8f88-4678-9249-3e37f2249ccf" name="Default Changelist" comment="" />
+      <created>1573131327416</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1573131327416</updated>
+      <workItem from="1573131328523" duration="678000" />
+      <workItem from="1573132014889" duration="3527000" />
+      <workItem from="1573266630268" duration="422000" />
+      <workItem from="1573267063233" duration="630000" />
+      <workItem from="1573268426818" duration="494000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+</project>

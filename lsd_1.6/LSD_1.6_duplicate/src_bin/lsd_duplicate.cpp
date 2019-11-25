@@ -56,10 +56,74 @@ struct argument
     double max;
 };
 
+/**
+ * 能够存储多个参数,并且读取其中的值的结构体
+ */
+
+struct arguments
+{
+    char name[FIELD_LENGTH];
+    char author[FIELD_LENGTH];
+    char version[FIELD_LENGTH];
+    char desc[FIELD_LENGTH];
+    char compiled[FIELD_LENGTH];
+    char year[FIELD_LENGTH];
+    int arg_num;
+    int arg_allocated;
+    struct argument* args;
+};
+
+
+/**
+ * 释放 arguments 结构体内存；
+ */
+
+static void free_arguments(struct arguments* arg)
+{
+    if (arg == NULL || arg->args == NULL)
+        error("Error: NULL pointer at 'free_arguments'.");
+    free((void *) arg->args);
+    free((void *) arg);
+}
+/**
+ * 允许字段中出现 数字 , 字母 , 以及 "_"
+ */
+static int is_id_char (int c)
+{
+    return c== '_' || isalpha(c) || isdigit(c) ;
+}
+/**
+ * 读取下一个字段的参数定义
+ */
+static char* get_next_filed(char * p , char *id , char *value)
+{
+    int n;
+
+    if (p == NULL || id  == NULL || value == NULL )        //检测输入是否正确
+        error("Error: invalid input to 'get_next_field'.");
+
+    while ( isspace(*p) ) ++p;
+    if (*p != '#')
+        error("Error： missing '#' in 'use description'.");
+
+}
+
+
+
+
+
+
 int main(int argc, char ** argv)
 {
-
-    error("错误");
+    std::cout <<  argc  << std::endl;
+    std::cout << argv[0]<< std::endl;
+    std::cout << argv[1]<< std::endl;
+    std::cout << *argv[0]<< std::endl;
+    std::cout << *argv[1]<< std::endl;
+   if (is_id_char ( *argv[1]))
+       std::cout << "输入是字母，数字 或 “_” ."<< std::endl;
+   else
+       std::cout << "输入不是是字母，数字 或 “_” ."<< std::endl;
 
     return EXIT_SUCCESS;
 }

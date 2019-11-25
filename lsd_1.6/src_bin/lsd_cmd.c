@@ -174,7 +174,7 @@ static char * get_next_field(char * p, char * id, char * value)                 
     id[n] = '\0';                                                                      //'\0'代表空字符,遇到代表结束此字符串结束
     if( *(p++) != ':' ) error("Error: missing ':' in 'use description'.");        //检查最后一位是否是 : ,若不是,报错
 
-    /* search for field value */                                                        /*  字段value  */
+    /* search for field value */                                                       /*  字段value  */
     while( isspace(*p) ) ++p; /* skip spaces */
     for( n=0; *p != '#' && *p != '\0' && n<FIELD_LENGTH; n++ ) value[n] = *(p++);
     if( n >= FIELD_LENGTH ) error("Error: field too long in 'use description'.");

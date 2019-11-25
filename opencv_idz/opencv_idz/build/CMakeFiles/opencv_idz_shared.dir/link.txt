@@ -1,0 +1,2 @@
+/usr/bin/ar qc ../lib/libopencv_idz_shared.a  CMakeFiles/opencv_idz_shared.dir/src/EDLines.cpp.o
+/usr/bin/ranlib ../lib/libopencv_idz_shared.a
