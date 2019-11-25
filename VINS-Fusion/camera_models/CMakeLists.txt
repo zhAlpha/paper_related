@@ -19,7 +19,6 @@ find_package(OpenCV REQUIRED)
 find_package(Ceres REQUIRED)
 include_directories(${CERES_INCLUDE_DIRS})
 
-
 catkin_package(
     INCLUDE_DIRS include
     LIBRARIES camera_models

@@ -76,8 +76,9 @@
 
 /*----------------------------------------------------------------------------*/
 /** Fatal error, print a message to standard-error output and exit.
+ * 致命信息输出 error
  */
-static void error(char * msg)
+static void error(char * msg)                                                  //error
 {
   fprintf(stderr,"%s\n",msg);
   exit(EXIT_FAILURE);
@@ -95,8 +96,9 @@ static void error(char * msg)
 
 /*----------------------------------------------------------------------------*/
 /** Structure to store one argument definition and read value.
+ *                                                                              //存储一个参数定义,以及读取数值 argument
  */
-struct argument
+struct argument                                                                 //argument
 {
   char name[FIELD_LENGTH];     /* name to internally identify the argument */
   char desc[FIELD_LENGTH];     /* description */
@@ -117,8 +119,9 @@ struct argument
 
 /*----------------------------------------------------------------------------*/
 /** Structure to store the full set of argument definitions and its values.
+ *                                                                               //存储一组参数数据的值,以及他们的读取  arguments
  */
-struct arguments
+struct arguments                                                                 //arguments
 {
   char name[FIELD_LENGTH];
   char author[FIELD_LENGTH];
@@ -133,8 +136,9 @@ struct arguments
 
 /*----------------------------------------------------------------------------*/
 /** Free an 'arguments' structure.
+ *                                                                                 //释放 arguments 参数 , free_arguments
  */
-static void free_arguments(struct arguments * arg)
+static void free_arguments(struct arguments * arg)                                 //free_arguments
 {
   if( arg == NULL || arg->args == NULL )
     error("Error: NULL pointer at 'free_arguments'.");
@@ -143,17 +147,17 @@ static void free_arguments(struct arguments * arg)
 }
 
 /*----------------------------------------------------------------------------*/
-/** Accepted characters in field identifier: numbers, letters and '_'.
+/** Accepted characters in field identifier: numbers, letters and '_'.             //允许字段中出现 数字 , 字母 , 以及 "_"
  */
-static int is_id_char(int c)
+static int is_id_char(int c)                                                       //is_id_char
 {
-  return c=='_' || isalpha(c) || isdigit(c);
+  return c=='_' || isalpha(c) || isdigit(c);                                        //isalpha(c)是判断c是否是字母,是为1,否为0, isdigit()是判断是否为数字
 }
 
 /*----------------------------------------------------------------------------*/
-/** Read next field definition in an argument definition.
+/** Read next field definition in an argument definition.                           //读取下一个字段的参数定义
  */
-static char * get_next_field(char * p, char * id, char * value)
+static char * get_next_field(char * p, char * id, char * value)                     // get_next_field
 {
   int n;
 
@@ -161,31 +165,31 @@ static char * get_next_field(char * p, char * id, char * value)
   if( p == NULL || id == NULL || value == NULL )
     error("Error: invalid input to 'get_next_field'.");
 
-  /* search for field id */
-  while( isspace(*p) ) ++p; /* skip spaces */
-  if( *p != '#' ) error("Error: missing '#' in 'use description'.");
+  /* search for field id */                                                          /*  字段ID  */
+  while( isspace(*p) ) ++p; /* skip spaces */                                     //跳过空格
+  if( *p != '#' ) error("Error: missing '#' in 'use description'.");            //检查开头是否有 #
   ++p;
-  for( n=0; is_id_char(*p) && n<FIELD_LENGTH; n++ ) id[n] = *(p++);
-  if( n >= FIELD_LENGTH ) error("Error: field too long in 'use description'.");
-  id[n] = '\0';
-  if( *(p++) != ':' ) error("Error: missing ':' in 'use description'.");
+  for( n=0; is_id_char(*p) && n<FIELD_LENGTH; n++ ) id[n] = *(p++);                  //把p指向的第一个输入的内容(use description)放到id中
+  if( n >= FIELD_LENGTH ) error("Error: field too long in 'use description'."); //第一个输入的内容超过 FIELD_LENGTH 时,报错
+  id[n] = '\0';                                                                      //'\0'代表空字符,遇到代表结束此字符串结束
+  if( *(p++) != ':' ) error("Error: missing ':' in 'use description'.");        //检查最后一位是否是 : ,若不是,报错
 
-  /* search for field value */
+  /* search for field value */                                                        /*  字段value  */
   while( isspace(*p) ) ++p; /* skip spaces */
   for( n=0; *p != '#' && *p != '\0' && n<FIELD_LENGTH; n++ ) value[n] = *(p++);
   if( n >= FIELD_LENGTH ) error("Error: field too long in 'use description'.");
   value[n] = '\0';
 
   /* remove spaces at the end of the field */
-  while( --n >= 0 && isspace(value[n]) ) value[n] = '\0';
+  while( --n >= 0 && isspace(value[n]) ) value[n] = '\0';                           //删除字段末尾的空格(如果有的话)
 
   return p;
 }
 
 /*----------------------------------------------------------------------------*/
-/** Read next token in an argument definition.
+/** Read next token in an argument definition.                                         //获取下一个参数的令牌(Token)
  */
-static char * get_next_token(char * p, char div, char * value)
+static char * get_next_token(char * p, char div, char * value)                         //获取下一个令牌 get_next_token
 {
   int n;
 
@@ -202,16 +206,16 @@ static char * get_next_token(char * p, char div, char * value)
   value[n] = '\0';
   while( --n >= 0 && isspace(value[n]) ) value[n] = '\0';
 
-  /* remove 'div' at the end of the token, if present */
+  /* remove 'div' at the end of the token, if present */                           //todo div是啥,为啥要remove掉
   if( *p == div ) ++p;
 
   return p;
 }
 
 /*----------------------------------------------------------------------------*/
-/** Process one argument description.
+/** Process one argument description.                                              //处理一个新的参数
  */
-static void process_new_argument(char * id, char * value,struct arguments * arg)
+static void process_new_argument(char * id, char * value,struct arguments * arg)   //process_new_argument
 {
   char token[FIELD_LENGTH];
   char * p;

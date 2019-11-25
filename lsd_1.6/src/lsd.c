@@ -198,14 +198,14 @@ static int double_equal(double a, double b)
   bb = fabs(b);
   abs_max = aa > bb ? aa : bb;
 
-  /* DBL_MIN is the smallest normalized number, thus, the smallest
+  /** DBL_MIN is the smallest normalized number, thus, the smallest
      number whose relative error is bounded by DBL_EPSILON. For
      smaller numbers, the same quantization steps as for DBL_MIN
      are used. Then, for smaller numbers, a meaningful "relative"
      error should be computed by dividing the difference by DBL_MIN.
 
      DBL_MIN是最小的归一化数字(double类型的最小值),因此,它的相对误差受DBL_EPSILON的约束.
-     为了更小的数字,就可以使用和 DBL_MIN 相同的量化步骤.然后为了更小的数值,"相对"误差可以
+     为了更小的数字,就可以使用和 DBL_MIN 相同的量化步长.然后为了更小的数值,"相对"误差可以
      通过差值除以DBL_MIN来计算得出.
 
 
@@ -257,21 +257,41 @@ typedef struct ntuple_list_s
 {
   unsigned int size;
   unsigned int max_size;
-  unsigned int dim;
+  unsigned int dim;//dimension(维数)
   double * values;
-} * ntuple_list;
+}  * ntuple_list;
 //TODO 这是typedef初始化为指针?不用写类型?
+//初始化为指向ntuple_list_s这一个结构体的指针,结构体没法指定类型;
+//这个写法是 用typedef 定义来简化函数指针的定义,如下例:
+/**
+ *
+int test(int a)
+{
+    return a;
+}
+
+int main(int argc, const char * argv[])
+{
+
+    typedef int (*fp)(int a);
+    fp f = test;
+    cout<<f(2)<<endl;
+    return 0;
+}
+  * */
 
 /*----------------------------------------------------------------------------*/
 /** Free memory used in n-tuple 'in'.
  */
-static void free_ntuple_list(ntuple_list in)
+
+ static void free_ntuple_list(ntuple_list in)
 {
-  if( in == NULL || in->values == NULL )
-    error("free_ntuple_list: invalid n-tuple input.");
-  free( (void *) in->values );
-  free( (void *) in );
+    if( in == NULL || in->values == NULL )
+        error("free_ntuple_list: invalid n-tuple input.");
+    free( (void *) in->values );
+    free( (void *) in );
 }
+
 
 /*----------------------------------------------------------------------------*/
 /** Create an n-tuple list and allocate memory for one element.
@@ -294,7 +314,7 @@ static ntuple_list new_ntuple_list(unsigned int dim)
   n_tuple->dim = dim;
 
   /* get memory for tuples */
-  n_tuple->values = (double *) malloc( dim*n_tuple->max_size * sizeof(double) );
+  n_tuple->values = (double *) malloc( dim*n_tuple->max_size * sizeof(double) );//分配空间 dim * max_size * 8
   if( n_tuple->values == NULL ) error("not enough memory.");
 
   return n_tuple;
@@ -419,6 +439,7 @@ static image_char new_image_char_ini( unsigned int xsize, unsigned int ysize,
   for(i=0; i<N; i++) image->data[i] = fill_value;
 
   return image;
+
 }
 
 /*----------------------------------------------------------------------------*/

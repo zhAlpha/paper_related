@@ -7,6 +7,7 @@ using namespace std;
 EDLines::EDLines(Mat _srcImage, GradientOperator _op, int _gradThresh, int _anchorThresh, int _scanInterval, int _minPathLen, double _sigma, bool _sumFlag, double _line_error, int _min_line_len, double _max_distance_between_two_lines, double _max_error)
 {	
 	// Проверка параметров на адекватность
+	// 适当参数验证
 	if (_gradThresh < 1) _gradThresh = 1;
 	if (_anchorThresh < 0) _anchorThresh = 0;
 	if (_sigma < 1.0) _sigma = 1.0;
