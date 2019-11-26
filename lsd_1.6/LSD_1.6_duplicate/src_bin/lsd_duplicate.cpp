@@ -99,12 +99,17 @@ static char* get_next_filed(char * p , char *id , char *value)
 {
     int n;
 
-    if (p == NULL || id  == NULL || value == NULL )        //检测输入是否正确
+    if (p == NULL || id  == NULL || value == NULL )               //检测输入是否正确
         error("Error: invalid input to 'get_next_field'.");
 
-    while ( isspace(*p) ) ++p;
-    if (*p != '#')
+    while ( isspace(*p) ) ++p;                                    //跳过空格
+    if (*p != '#')                                                //检测开头是否是#,并跳过
         error("Error： missing '#' in 'use description'.");
+    ++p;
+    for ( n=0; is_id_char(*p)&& n < FIELD_LENGTH; n++ )
+    {
+        id[n] = *(p++);                                           //
+    }
 
 }
 
@@ -118,8 +123,11 @@ int main(int argc, char ** argv)
     std::cout <<  argc  << std::endl;
     std::cout << argv[0]<< std::endl;
     std::cout << argv[1]<< std::endl;
+    std::cout << argv[2]<< std::endl;
     std::cout << *argv[0]<< std::endl;
-    std::cout << *argv[1]<< std::endl;
+    std::cout << **argv<< std::endl;
+    std::cout << *argv[2]<< std::endl;
+    //std::cout << << std::endl;
    if (is_id_char ( *argv[1]))
        std::cout << "输入是字母，数字 或 “_” ."<< std::endl;
    else

@@ -169,25 +169,25 @@ static char * get_next_field(char * p, char * id, char * value)                 
     while( isspace(*p) ) ++p; /* skip spaces */                                     //跳过空格
     if( *p != '#' ) error("Error: missing '#' in 'use description'.");            //检查开头是否有 #
     ++p;
-    for( n=0; is_id_char(*p) && n<FIELD_LENGTH; n++ ) id[n] = *(p++);                  //把p指向的第一个输入的内容(use description)放到id中
+    for( n=0; is_id_char(*p) && n<FIELD_LENGTH; n++ ) id[n] = *(p++);                  //把p指向的 字母,数字,连字符"_" 组成的字段放到id中
     if( n >= FIELD_LENGTH ) error("Error: field too long in 'use description'."); //第一个输入的内容超过 FIELD_LENGTH 时,报错
     id[n] = '\0';                                                                      //'\0'代表空字符,遇到代表结束此字符串结束
     if( *(p++) != ':' ) error("Error: missing ':' in 'use description'.");        //检查最后一位是否是 : ,若不是,报错
 
     /* search for field value */                                                       /*  字段value  */
     while( isspace(*p) ) ++p; /* skip spaces */
-    for( n=0; *p != '#' && *p != '\0' && n<FIELD_LENGTH; n++ ) value[n] = *(p++);
+    for( n=0; *p != '#' && *p != '\0' && n<FIELD_LENGTH; n++ ) value[n] = *(p++);       //把:后面的非空格字段放到value里面
     if( n >= FIELD_LENGTH ) error("Error: field too long in 'use description'.");
-    value[n] = '\0';
+    value[n] = '\0';                                                                    //字段的结构应该是 # id : value "\0"
 
     /* remove spaces at the end of the field */
     while( --n >= 0 && isspace(value[n]) ) value[n] = '\0';                           //删除字段末尾的空格(如果有的话)
 
-    return p;
+    return p;                                                                            //返回指向下一个字段的指针
 }
 
 /*----------------------------------------------------------------------------*/
-/** Read next token in an argument definition.                                         //获取下一个参数的令牌(Token)
+/** Read next token in an argument definition.                                         //获取下一个参数的Token
  */
 static char * get_next_token(char * p, char div, char * value)                         //获取下一个令牌 get_next_token
 {
@@ -198,18 +198,18 @@ static char * get_next_token(char * p, char div, char * value)                  
         error("Error: invalid input to 'get_next_token'.");
 
     if( *p == '\0' )
-        error("Error: argument token expected in 'use description'.");
+        error("Error: argument token expected in 'use description'.");            //检查输入是否正确,有无参数令牌
 
-    while( isspace(*p) ) ++p; /* skip spaces */
-    for( n=0; *p!=div && *p!='\0' && n<FIELD_LENGTH; n++) value[n] = *(p++);
-    if( n >= FIELD_LENGTH ) error("Error: field too long in 'use description'.");
-    value[n] = '\0';
-    while( --n >= 0 && isspace(value[n]) ) value[n] = '\0';
+    while( isspace(*p) ) ++p; /* skip spaces */                                     //跳过空格
+    for( n=0; *p!=div && *p!='\0' && n<FIELD_LENGTH; n++) value[n] = *(p++);           //把p指向的内容写入到value里面
+    if( n >= FIELD_LENGTH ) error("Error: field too long in 'use description'."); //若是由于字段太长跳出循环,则报错
+    value[n] = '\0';                                                                   //
+    while( --n >= 0 && isspace(value[n]) ) value[n] = '\0';                         //删除value段末尾的空格
 
-    /* remove 'div' at the end of the token, if present */                             //todo div是啥,为啥要remove掉
-    if( *p == div ) ++p;
+    /* remove 'div' at the end of the token, if present */
+    if( *p == div ) ++p;                                                               //删除分隔符
 
-    return p;
+    return p;                                                                          //返回指向下一个token的指针
 }
 
 /*----------------------------------------------------------------------------*/
@@ -222,7 +222,7 @@ static void process_new_argument(char * id, char * value,struct arguments * arg)
     int i;
 
     /* check input */
-    if( id == NULL || value == NULL || arg == NULL )
+    if( id == NULL || value == NULL || arg == NULL )                                  //检查输入,三个参数不能全为空
         error("Error: invalid input to 'process_new_argument'.");
 
     /* allocate memory if needed */                                                   //分配内存,如果需要的话
@@ -360,7 +360,7 @@ static void process_argument_description( char * desc, struct arguments * arg )
             malloc( arg->arg_allocated * sizeof(struct argument) );
     if( arg->args == NULL ) error("Error: not enough memory.");
 
-    /* assign compilation date and time */
+    /* assign compilation date and time */                                                //添加编译时间及日期
     strcat(arg->compiled,__DATE__);
     strcat(arg->compiled," ");
     strcat(arg->compiled,__TIME__);
