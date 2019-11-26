@@ -1,1 +1,0 @@
-/usr/bin/cc -fPIC -g  -rdynamic CMakeFiles/lsd.dir/src_bin/lsd_cmd.c.o  -o lsd -Wl,-rpath,/home/zh/paper_related/lsd_1.6/lib ../lib/libLsd_1.6_shared.so -lm 

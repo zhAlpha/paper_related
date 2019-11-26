@@ -1,5 +1,0 @@
-/home/zh/paper_related/lsd_1.6/build/CMakeFiles/rebuild_cache.dir
-/home/zh/paper_related/lsd_1.6/build/CMakeFiles/edit_cache.dir
-/home/zh/paper_related/lsd_1.6/build/CMakeFiles/lsd.dir
-/home/zh/paper_related/lsd_1.6/build/CMakeFiles/Lsd_1.6_shared.dir
-/home/zh/paper_related/lsd_1.6/build/CMakeFiles/lsd_example.dir

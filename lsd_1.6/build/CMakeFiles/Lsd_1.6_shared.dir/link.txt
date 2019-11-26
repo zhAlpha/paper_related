@@ -1,2 +1,0 @@
-/usr/bin/ar qc ../lib/libLsd_1.6_shared.a  CMakeFiles/Lsd_1.6_shared.dir/src/lsd.c.o
-/usr/bin/ranlib ../lib/libLsd_1.6_shared.a

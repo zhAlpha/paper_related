@@ -1,1 +1,0 @@
-/usr/bin/cc -fPIC -fPIC -g  -shared -Wl,-soname,libLsd_1.6_shared.so -o ../lib/libLsd_1.6_shared.so CMakeFiles/Lsd_1.6_shared.dir/src/lsd.c.o 
