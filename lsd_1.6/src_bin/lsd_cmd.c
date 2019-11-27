@@ -168,22 +168,23 @@ static char * get_next_field(char * p, char * id, char * value)                 
     /* search for field id */                                                          /*  字段ID  */
     while( isspace(*p) ) ++p; /* skip spaces */                                     //跳过空格
     if( *p != '#' ) error("Error: missing '#' in 'use description'.");            //检查开头是否有 #
-    ++p;
-    for( n=0; is_id_char(*p) && n<FIELD_LENGTH; n++ ) id[n] = *(p++);                  //把p指向的 字母,数字,连字符"_" 组成的字段放到id中
+    ++p;                                                                               //把#跳过,不放进id里面
+    for( n=0; is_id_char(*p) && n<FIELD_LENGTH; n++ ) id[n] = *(p++);                  //把p指向的 字母,数字,连字符"_" 组成的字段放到id中 ***** 此时p指向 : 的前一位 *****
     if( n >= FIELD_LENGTH ) error("Error: field too long in 'use description'."); //第一个输入的内容超过 FIELD_LENGTH 时,报错
-    id[n] = '\0';                                                                      //'\0'代表空字符,遇到代表结束此字符串结束
-    if( *(p++) != ':' ) error("Error: missing ':' in 'use description'.");        //检查最后一位是否是 : ,若不是,报错
+    id[n] = '\0';                                                                      //'\0'代表空字符,遇到代表结束此字符串结束,if语句中的条件判断语句一定会执行,所以此时的p
+    if( *(p++) != ':' ) error("Error: missing ':' in 'use description'.");        //检查放入id的最后一位是否是 : ,若不是,报错       *****     此时p指向 :     *****
 
     /* search for field value */                                                       /*  字段value  */
     while( isspace(*p) ) ++p; /* skip spaces */
-    for( n=0; *p != '#' && *p != '\0' && n<FIELD_LENGTH; n++ ) value[n] = *(p++);       //把:后面的非空格字段放到value里面
+    for( n=0; *p != '#' && *p != '\0' && n<FIELD_LENGTH; n++ ) value[n] = *(p++);      //把:后面的非空格字段放到value里面***** 此时p指向 : 后面的最后一个字符的下一位,即指向了下一个# *****
     if( n >= FIELD_LENGTH ) error("Error: field too long in 'use description'.");
-    value[n] = '\0';                                                                    //字段的结构应该是 # id : value "\0"
+    value[n] = '\0';                                                                   //字段的结构应该是 # id : value,
 
     /* remove spaces at the end of the field */
-    while( --n >= 0 && isspace(value[n]) ) value[n] = '\0';                           //删除字段末尾的空格(如果有的话)
+    while( --n >= 0 && isspace(value[n]) ) value[n] = '\0';                         //删除字段末尾的空格(如果有的话)
 
-    return p;                                                                            //返回指向下一个字段的指针
+    return p;                                                                          //返回指向下一个字段开头的指针,即指向下一个#
+                                                                                       //实现把输入的#后面:前面的(不包括:)的内容放到id里面,把:后面的内容放到value里面
 }
 
 /*----------------------------------------------------------------------------*/
@@ -198,10 +199,10 @@ static char * get_next_token(char * p, char div, char * value)                  
         error("Error: invalid input to 'get_next_token'.");
 
     if( *p == '\0' )
-        error("Error: argument token expected in 'use description'.");            //检查输入是否正确,有无参数令牌
+        error("Error: argument token expected in 'use description'.");            //检查输入是否正确,有无参数令牌,
 
-    while( isspace(*p) ) ++p; /* skip spaces */                                     //跳过空格
-    for( n=0; *p!=div && *p!='\0' && n<FIELD_LENGTH; n++) value[n] = *(p++);           //把p指向的内容写入到value里面
+    while( isspace(*p) ) ++p; /* skip spaces */                                     //删除value段前的空格
+    for( n=0; *p!=div && *p!='\0' && n<FIELD_LENGTH; n++) value[n] = *(p++);           //把p指向的内容写入到value里面,到分隔符 | 终止,
     if( n >= FIELD_LENGTH ) error("Error: field too long in 'use description'."); //若是由于字段太长跳出循环,则报错
     value[n] = '\0';                                                                   //
     while( --n >= 0 && isspace(value[n]) ) value[n] = '\0';                         //删除value段末尾的空格
@@ -209,7 +210,10 @@ static char * get_next_token(char * p, char div, char * value)                  
     /* remove 'div' at the end of the token, if present */
     if( *p == div ) ++p;                                                               //删除分隔符
 
-    return p;                                                                          //返回指向下一个token的指针
+    return p;                                                                          //返回指向下一个token的指针,即分隔符 | 后面字符串的第一个字符
+                                                                                        //如#opt: scale | s | double | 0.8 | 0.0 | |             \
+                                                                                        //      Scale image by Gaussian filter before processing.
+                                                                                        //get_next_token函数的作用就是把分隔符 | 前的内容(token) 如上例中的scale s double等等, 都逐个写入value里面
 }
 
 /*----------------------------------------------------------------------------*/
@@ -225,7 +229,7 @@ static void process_new_argument(char * id, char * value,struct arguments * arg)
     if( id == NULL || value == NULL || arg == NULL )                                  //检查输入,三个参数不能全为空
         error("Error: invalid input to 'process_new_argument'.");
 
-    /* allocate memory if needed */                                                   //分配内存,如果需要的话
+    /* allocate memory if needed */                                                   //分配内存,如果需要的话,这里设的是0
     if( arg->arg_num >= arg->arg_allocated )
     {
         arg->arg_allocated *= 2;
@@ -235,13 +239,14 @@ static void process_new_argument(char * id, char * value,struct arguments * arg)
     }
 
     /* argument name */
-    p = get_next_token(value,'|',arg->args[arg->arg_num].name);
+    p = get_next_token(value,'|',arg->args[arg->arg_num].name);                  //opt/req token的第一项 赋值名称args[].name
+
     for( i=0; i<arg->arg_num; i++ )
         if( strcmp(arg->args[i].name,arg->args[arg->arg_num].name) == 0 )
             error("Error: argument name used twice in 'use description'.");
 
     /* 'option' letter - to be used with '-' to identify option */
-    p = get_next_token(p,'|',token);
+    p = get_next_token(p,'|',token);                                             //opt token的第二项 赋值操作选项字母args[].id 或 req token id设为0
     if( strcmp(id,"opt") == 0 )
     {
         arg->args[arg->arg_num].required = FALSE;
@@ -251,8 +256,8 @@ static void process_new_argument(char * id, char * value,struct arguments * arg)
         if( !isalpha(arg->args[arg->arg_num].id) )
             error("Error: option id must be a letter in 'use description'.");
         for( i=0; i<arg->arg_num; i++ )
-            if( !(arg->args[i].required) &&
-                arg->args[i].id == arg->args[arg->arg_num].id )
+            if( !(arg->args[i].required) &&                                          //todo:这一句有啥意义吗
+                arg->args[i].id == arg->args[arg->arg_num].id )                      //就是为了检测当前的 操作选项字母 id前面用过了没,有没有重复的
                 error("Error: option letter used twice in 'use description'.");
     }
     else /* must be 'req' - required argument */
@@ -264,7 +269,7 @@ static void process_new_argument(char * id, char * value,struct arguments * arg)
     }
 
     /* argument type */
-    p = get_next_token(p,'|',token);
+    p = get_next_token(p,'|',token);                                            //opt/req token的第三项 设置args[].type 的类型
     if( strcmp(token,"int") == 0 )         arg->args[arg->arg_num].type = 'i';
     else if( strcmp(token,"double") == 0 ) arg->args[arg->arg_num].type = 'd';
     else if( strcmp(token,"str") == 0 )    arg->args[arg->arg_num].type = 's';
@@ -272,23 +277,23 @@ static void process_new_argument(char * id, char * value,struct arguments * arg)
     else error("Error: unknown argument type in 'use description'.");
 
     /* required arguments can't be boolean */
-    if( arg->args[arg->arg_num].required && arg->args[arg->arg_num].type == 'b' )
+    if( arg->args[arg->arg_num].required && arg->args[arg->arg_num].type == 'b' )    //req token的第三项 args[].type 不能是bool类型
         error("Error: required arguments can't be boolean in 'use description'.");
 
     /* default value */
-    p = get_next_token(p,'|',token);
-    if( strlen(token) > 0 )
+    p = get_next_token(p,'|',token);                                             //opt token的第四项
+    if( strlen(token) > 0 )                                                          //req 由于其第四项的值是空格,而空格不会写入到token里面,因而用过判断token字符串长度来排除掉req
     {
-        if( arg->args[arg->arg_num].required )
+        if( arg->args[arg->arg_num].required )                                       //
             error("Error: default value in required argument in 'use description'.");
-        arg->args[arg->arg_num].def_value = TRUE;
-        arg->args[arg->arg_num].assigned = TRUE;
-        strcpy(arg->args[arg->arg_num].d_value,token);
-        strcpy(arg->args[arg->arg_num].s_value,token);
+        arg->args[arg->arg_num].def_value = TRUE;                                    //判断是否是默认数值设置成功
+        arg->args[arg->arg_num].assigned = TRUE;                                     //todo:判断默认数值是否分配成功
+        strcpy(arg->args[arg->arg_num].d_value,token);                               //把数值写入到args[].def_value中
+        strcpy(arg->args[arg->arg_num].s_value,token);                               //把数值写入到args[].def_value中
         if( arg->args[arg->arg_num].type == 'i' )
-            arg->args[arg->arg_num].i_value = atoi(token);
+            arg->args[arg->arg_num].i_value = atoi(token);                           //把输入的数值的字符串转换为整数
         if( arg->args[arg->arg_num].type == 'd' )
-            arg->args[arg->arg_num].f_value = atof(token);
+            arg->args[arg->arg_num].f_value = atof(token);                           //把输入的数值的字符串转换为浮点数
     }
     else
     {
@@ -298,11 +303,11 @@ static void process_new_argument(char * id, char * value,struct arguments * arg)
     }
 
     /* required arguments can't have default value */
-    if( arg->args[arg->arg_num].required && arg->args[arg->arg_num].def_value )
+    if( arg->args[arg->arg_num].required && arg->args[arg->arg_num].def_value )       //required参数不能设置默认参数
         error("Error: required args can't have default value in 'use description'.");
 
     /* min value */
-    p = get_next_token(p,'|',token);
+    p = get_next_token(p,'|',token);                                              //opt token的第五项,赋值最小值到args[].min中
     if( strlen(token) > 0 )
     {
         arg->args[arg->arg_num].min_set = TRUE;
@@ -314,11 +319,11 @@ static void process_new_argument(char * id, char * value,struct arguments * arg)
     }
 
     /* max value */
-    p = get_next_token(p,'|',token);
+    p = get_next_token(p,'|',token);                                             //opt token的第六项,赋值最大值到args[].max中
     if( strlen(token) > 0 )
     {
         arg->args[arg->arg_num].max_set = TRUE;
-        arg->args[arg->arg_num].max = atof(token);
+        arg->args[arg->arg_num].max = atof(token);                                    //todo:空格的话怎么办
     }
     else
     {
@@ -326,13 +331,13 @@ static void process_new_argument(char * id, char * value,struct arguments * arg)
     }
 
     /* argument description */
-    p = get_next_token(p,'|',arg->args[arg->arg_num].desc);
+    p = get_next_token(p,'|',arg->args[arg->arg_num].desc);                      //opt token的第七项,把介绍描述写到args[].desc中
 
     /* the field should end there */
     if( *p != '\0' )
-        error("Error: too many tokens in one argument in 'use description'.");
+        error("Error: too many tokens in one argument in 'use description'.");  //如果后面还有字符,指针指向的并不是\0,报错 Error: too many tokens in one argument in 'use description'.
 
-    arg->arg_num++;
+    arg->arg_num++;                                                                   //如果有n个 opt和req 那么args[]就从 args[0] 到 args[n-1]
 }
 
 /*----------------------------------------------------------------------------*/
@@ -366,7 +371,16 @@ static void process_argument_description( char * desc, struct arguments * arg )
     strcat(arg->compiled,__TIME__);
 
     /* process description */
-    while( *desc != '\0' )
+    /**
+     * 处理方式是把 USE 字符串中的当前行 # 后的放到id里面, : 后的放到value里面,如#name:lsd
+     * id里面的内容先和name这个字符串进行比较,如果是name,证明value后面存放的是name后面存放的值"lsd"
+     * 比较成功匹配之后,将其放到 arg->name 里面,赋值成功,同时,这个函数会返回一个指针,指针会指向
+     * 下一个字段的 # .
+     * 依次写入了 name author version year desc ,有且只有一个,多个会报错 Error: multiple '****' fields in 'use description'.
+     * 后面再写入多个opt、req,会有多个,而且是必须项,没有会报错 Error: argument token expected in 'use description'. 在 get_next_token 写的.
+     *
+     */
+    while( *desc != '\0' )                                                                //
     {
         desc = get_next_field(desc,id,value);
 
@@ -402,7 +416,7 @@ static void process_argument_description( char * desc, struct arguments * arg )
         }
         else if( strcmp(id,"opt") == 0 || strcmp(id,"req") == 0 )
         {
-            process_new_argument(id,value,arg);
+            process_new_argument(id,value,arg);                                        //在USE里面有多少个opt req,就执行多少次
         }
         else
         {
@@ -410,7 +424,7 @@ static void process_argument_description( char * desc, struct arguments * arg )
         }
     }
 
-    /* verify required arguments */
+    /* verify required arguments */                                                    //确定是否每个参数都有值写入
     if( arg->name[0] == '\0' )
         error("Error: program name is required in 'use description'.");
     if( arg->author[0] == '\0' )
@@ -426,7 +440,7 @@ static void process_argument_description( char * desc, struct arguments * arg )
 /*----------------------------------------------------------------------------*/
 /** Print version.
  */
-static void print_version(struct arguments * arg, FILE * f)
+static void print_version(struct arguments * arg, FILE * f)                           //FILE 主要用来定义带缓冲的文件指针,是一种数据类型
 {
     if( arg == NULL || f == NULL )
         error("Error: invalid input to 'print_version'.");
