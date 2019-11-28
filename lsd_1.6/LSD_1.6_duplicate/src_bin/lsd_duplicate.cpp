@@ -121,8 +121,9 @@ static char* get_next_filed(char * p , char *id , char *value)
 int main(int argc, char ** argv)
 {
     std::cout <<  argc  << std::endl;
-    std::cout << argv[0]<< std::endl;
-    std::cout << argv[1]<< std::endl;
+    std::cout << argv << std::endl;
+    std::cout << &argv[1] << std::endl;
+    std::cout << argv[1][1]<< std::endl;
     std::cout << argv[2]<< std::endl;
     std::cout << *argv[0]<< std::endl;
     std::cout << **argv<< std::endl;

@@ -129,7 +129,7 @@ struct arguments                                                                
     char desc[FIELD_LENGTH];
     char compiled[FIELD_LENGTH];
     char year[FIELD_LENGTH];
-    int  arg_num;
+    int  arg_num;                                                               //opt和req参数的个数
     int  arg_allocated;
     struct argument * args;
 };
@@ -218,6 +218,8 @@ static char * get_next_token(char * p, char div, char * value)                  
 
 /*----------------------------------------------------------------------------*/
 /** Process one argument description.                                                 //处理一个新的参数
+ *                                                                                    实现了把opt req里面的参数分别写到  name,id,type,def_value assigned d_value s_value i_value f_value, max,min等
+ *                                                                                    并且记录下了arg->arg_num的个数
  */
 static void process_new_argument(char * id, char * value,struct arguments * arg)      //process_new_argument
 {
@@ -281,7 +283,7 @@ static void process_new_argument(char * id, char * value,struct arguments * arg)
         error("Error: required arguments can't be boolean in 'use description'.");
 
     /* default value */
-    p = get_next_token(p,'|',token);                                             //opt token的第四项
+    p = get_next_token(p,'|',token);                                             //opt token的第四项def_value assigned d_value s_value i_value f_value
     if( strlen(token) > 0 )                                                          //req 由于其第四项的值是空格,而空格不会写入到token里面,因而用过判断token字符串长度来排除掉req
     {
         if( arg->args[arg->arg_num].required )                                       //
@@ -322,8 +324,8 @@ static void process_new_argument(char * id, char * value,struct arguments * arg)
     p = get_next_token(p,'|',token);                                             //opt token的第六项,赋值最大值到args[].max中
     if( strlen(token) > 0 )
     {
-        arg->args[arg->arg_num].max_set = TRUE;
-        arg->args[arg->arg_num].max = atof(token);                                    //todo:空格的话怎么办
+        arg->args[arg->arg_num].max_set = TRUE;                                       //如果token里面有值,则代表是允许设置最大值,标志位 max_set 设置为真
+        arg->args[arg->arg_num].max = atof(token);                                    //如果里面是空格,直接标志位设置为假
     }
     else
     {
@@ -378,7 +380,6 @@ static void process_argument_description( char * desc, struct arguments * arg )
      * 下一个字段的 # .
      * 依次写入了 name author version year desc ,有且只有一个,多个会报错 Error: multiple '****' fields in 'use description'.
      * 后面再写入多个opt、req,会有多个,而且是必须项,没有会报错 Error: argument token expected in 'use description'. 在 get_next_token 写的.
-     *
      */
     while( *desc != '\0' )                                                                //
     {
@@ -438,7 +439,7 @@ static void process_argument_description( char * desc, struct arguments * arg )
 }
 
 /*----------------------------------------------------------------------------*/
-/** Print version.
+/** Print version.                                                                    //打印版本信息
  */
 static void print_version(struct arguments * arg, FILE * f)                           //FILE 主要用来定义带缓冲的文件指针,是一种数据类型
 {
@@ -448,7 +449,7 @@ static void print_version(struct arguments * arg, FILE * f)                     
 }
 
 /*----------------------------------------------------------------------------*/
-/** Print command line interface help and exit.
+/** Print command line interface help and exit.                                       //打印命令行接口的帮助、退出选项
  */
 static void use(struct arguments * arg)
 {
@@ -456,7 +457,7 @@ static void use(struct arguments * arg)
 
     if( arg == NULL ) error("Error: invalid input to 'use'.");
 
-    fprintf(stderr,"----------------------------------------");
+    fprintf(stderr,"\n----------------------------------------");
     fprintf(stderr,"----------------------------------------\n");
     fprintf(stderr,"This is %s, ",arg->name);
     print_version(arg,stderr);
@@ -466,13 +467,13 @@ static void use(struct arguments * arg)
     fprintf(stderr,"----------------------------------------\n");
     fprintf(stderr,"\nUsage: %s",arg->name);
 
-    /* always present 'help' option */
+    /* always present 'help' option */                                                //打印 [--help]
     fprintf(stderr," [%s]",HELP_OPTION);
 
-    /* always present version option */
+    /* always present version option */                                               //打印 [--version]
     fprintf(stderr," [%s]",VERSION_OPTION);
 
-    for(i=0;i<arg->arg_num;i++)
+    for(i=0;i<arg->arg_num;i++)                                                       //逐个打印opt的 [args[].id args[].name]
         if( !(arg->args[i].required) )
         {
             fprintf(stderr," [-%c",arg->args[i].id);
@@ -480,7 +481,7 @@ static void use(struct arguments * arg)
             fprintf(stderr,"]");
         }
 
-    for(i=0;i<arg->arg_num;i++)
+    for(i=0;i<arg->arg_num;i++)                                                        //逐个打印req的 args[].name]
         if( arg->args[i].required )
             fprintf(stderr," %s",arg->args[i].name);
 
@@ -492,7 +493,7 @@ static void use(struct arguments * arg)
     fprintf(stderr,"  %s\tPrint version and compilation date/time and exit.\n",
             VERSION_OPTION);
     for(i=0;i<arg->arg_num;i++)
-        if( !(arg->args[i].required) )
+        if( !(arg->args[i].required) )                                                 //opt
         {
             fprintf(stderr,"  -%c",arg->args[i].id);
             if( arg->args[i].type != 'b' )
@@ -565,7 +566,7 @@ static void use(struct arguments * arg)
 }
 
 /*----------------------------------------------------------------------------*/
-/** Evaluate arguments.
+/** Evaluate arguments.                                                                   //参数输入部分检查
  */
 static void evaluate_arguments(int argc, char ** argv, struct arguments * arg)
 {
@@ -573,14 +574,14 @@ static void evaluate_arguments(int argc, char ** argv, struct arguments * arg)
     int n,i;
 
     /* check input */
-    if( argc <= 0 ) error("Error: unexpected command line: missing command.");
+    if( argc <= 0 ) error("Error: unexpected command line: missing command.");     //没有参数输入会报错
     if( argv == NULL || arg == NULL )
         error("Error: invalid input to 'evaluate_arguments'.");
 
-    for( n=1; !in_required_args && n < argc; n++ )
+    for( n=1; !in_required_args && n < argc; n++ )                                      //in_required_args为FALSE 且 n < 输入参数个数
     {
-        /* when an argument do not start with "-" it is not optional.
-           but, if the argument is just "-", then is a non optional
+        /* when an argument do not start with "-" it is not optional.                   输入的参数不是以 "-" 开始,或者输入了"-" ,
+           but, if the argument is just "-", then is a non optional                      但是没有id参数,则把标志位 in_required_args = TRUE
            argument with value "-", and will be analyzed later.  */
         if( argv[n][0] != '-' || (argv[n][0]=='-' && strlen(argv[n])== 1) )
         {
@@ -589,7 +590,7 @@ static void evaluate_arguments(int argc, char ** argv, struct arguments * arg)
             continue;
         }
 
-        if( strlen(argv[n]) != 2 )
+        if( strlen(argv[n]) != 2 )                                                      //查看刚刚输入的"-" 前一参数是否是"--help" 或者"--version"
         {
             /* check if it is the especial option 'help' */
             if( strcmp(argv[n],HELP_OPTION) == 0 ) use(arg);
@@ -602,13 +603,13 @@ static void evaluate_arguments(int argc, char ** argv, struct arguments * arg)
                 exit(EXIT_SUCCESS);
             }
 
-            /* otherwise is a bad option */
+            /* otherwise is a bad option */                                             //都不是的话报错
             fprintf(stderr,"Error: %s ",argv[n]);
             error("unrecognized option.");
         }
 
         for( i=0; i<arg->arg_num; i++ )
-            if( !(arg->args[i].required) && arg->args[i].id == argv[n][1] )
+            if( !(arg->args[i].required) && arg->args[i].id == argv[n][1] )           //输入的参数是opt里的某一个,则继续
             {
                 arg->args[i].assigned = TRUE;
                 if( arg->args[i].type != 'b' )
@@ -722,12 +723,12 @@ static struct arguments * process_arguments(char * desc, int argc, char ** argv)
     arg = (struct arguments *) malloc(sizeof(struct arguments));
     if( arg == NULL ) error("Error: not enough memory.");
 
-    process_argument_description(desc,arg);
-    evaluate_arguments(argc,argv,arg);
+    process_argument_description(desc,arg);                                       //把desc里的东西都放到arg里面
+    evaluate_arguments(argc,argv,arg);                                            //输入部分检查
 
     /* if there are missing arguments print the 'use' information */
     for(i=0; i<arg->arg_num; i++)
-        if( arg->args[i].required && !(arg->args[i].assigned) ) use(arg);
+        if( arg->args[i].required && !(arg->args[i].assigned) ) use(arg);         //缺少必要的参数,会打印use
 
     return arg;
 }
@@ -741,13 +742,13 @@ static int is_assigned(struct arguments * arg, char * name)
     if( arg == NULL || name == NULL )
         error("Error: invalid input to 'is_assigned'.");
     for(i=0; i<arg->arg_num; i++)
-        if( strcmp(name,arg->args[i].name) == 0 ) return arg->args[i].assigned;
+        if( strcmp(name,arg->args[i].name) == 0 ) return arg->args[i].assigned;   //检查当前输入的元素是否分配成功
     error("Error: is_assigned: unknown argument.");
     return -1; /* useless, just to prevent warning in strict compilers */
 }
 
 /*----------------------------------------------------------------------------*/
-/** Get the value of a string argument.
+/** Get the value of a string argument.                                           //获取字符串string中的参数
  */
 static char * get_str(struct arguments * arg, char * name)
 {
@@ -764,7 +765,7 @@ static char * get_str(struct arguments * arg, char * name)
                 if( !(arg->args[i].assigned) ) return NULL;
                 return arg->args[i].s_value;
             }
-            else error("Error: get_str: the parameter is not a double.");
+            else error("Error: get_str: the parameter is not a string.");
         }
     error("Error: get_str: unknown argument.");
     return NULL; /* useless, just to prevent warning in strict compilers */
@@ -795,7 +796,7 @@ static int get_int(struct arguments * arg, char * name)
 /*----------------------------------------------------------------------------*/
 /** Get the value of a double argument.
  */
-static double get_double(struct arguments * arg, char * name)
+static double get_double(struct arguments * arg, char * name)                       //把名字同为name的double value值取出来
 {
     int i;
 
@@ -867,7 +868,7 @@ static double * read_pgm_image_double(int * X, int * Y, char * name)
 
     /* open file */
     if( strcmp(name,"-") == 0 ) f = stdin;
-    else f = fopen(name,"rb");
+    else f = fopen(name,"rb");                                       //用给定的模式打开文件 模式"rb"  rb 读打开一个二进制文件，只允许读数据。
     if( f == NULL ) error("Error: unable to open input image file.");
 
     /* read header */
