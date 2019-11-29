@@ -37,6 +37,10 @@
 #include <string.h>
 #include <ctype.h>
 #include "../include/lsd.h"
+#include <iostream>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 
 #ifndef FALSE
 #define FALSE 0
@@ -310,7 +314,7 @@ static void process_new_argument(char * id, char * value,struct arguments * arg)
 /*----------------------------------------------------------------------------*/
 /** Process an argument definition.
  */
-static void process_argument_description( char * desc, struct arguments * arg )
+static void process_argument_description(char * desc, struct arguments * arg )
 {
     char id[FIELD_LENGTH];
     char value[FIELD_LENGTH];
@@ -1033,9 +1037,13 @@ static void write_svg( double * segs, int n, int dim,
 
 int main(int argc, char** argv)
 {
-    struct arguments * arg = process_arguments(USE,argc,argv);
+    struct arguments * arg = process_arguments((char*)USE,argc,argv);
     FILE * output;
     double * image;
+    cv::Mat Image;
+   // double* cv::Mat::Image ;
+    cv::Mat Image_sh;
+
     int X,Y;
     double * segs;
     int n;
@@ -1045,52 +1053,62 @@ int main(int argc, char** argv)
     int i,j;
 
     /* read input file */
-    image = read_pgm_image_double(&X,&Y,get_str(arg,"in"));
+//    image = read_pgm_image_double(&X,&Y,get_str(arg,"in"));
+   * Image =  cv::imread(get_str(arg,"in")) ;
+//    cv::resize(Image, Image_sh,CvSize(6,3));
+    double * image =;
+//    X = Image.cols;
+//    Y = Image.rows;
 
-    /* execute LSD */
-    segs = LineSegmentDetection( &n, image, X, Y,
-                                 get_double(arg,"scale"),
-                                 get_double(arg,"sigma_coef"),
-                                 get_double(arg,"quant"),
-                                 get_double(arg,"ang_th"),
-                                 get_double(arg,"log_eps"),
-                                 get_double(arg,"density_th"),
-                                 get_int(arg,"n_bins"),
-                                 is_assigned(arg,"reg") ? &region : NULL,
-                                 &regX, &regY );
+//    std::cout <<Image_sh<< std::endl;
+    std::cout <<image[2]<< std::endl;
 
-    /* output */
-    if( strcmp(get_str(arg,"out"),"-") == 0 ) output = stdout;
-    else output = fopen(get_str(arg,"out"),"w");
-    if( output == NULL ) error("Error: unable to open ASCII output file.");
-    for(i=0;i<n;i++)
-    {
-        for(j=0;j<dim;j++)
-            fprintf(output,"%f ",segs[i*dim+j]);
-        fprintf(output,"\n");
-    }
-    if( output != stdout && fclose(output) == EOF ) /* close file if needed */
-        error("Error: unable to close file while output file.");
+//
+//    /* execute LSD */
+//    segs = LineSegmentDetection( &n, image, X, Y,
+//                                 get_double(arg,"scale"),
+//                                 get_double(arg,"sigma_coef"),
+//                                 get_double(arg,"quant"),
+//                                 get_double(arg,"ang_th"),
+//                                 get_double(arg,"log_eps"),
+//                                 get_double(arg,"density_th"),
+//                                 get_int(arg,"n_bins"),
+//                                 is_assigned(arg,"reg") ? &region : NULL,
+//                                 &regX, &regY );
+//
+//    /* output */
+//    if( strcmp(get_str(arg,"out"),"-") == 0 ) output = stdout;
+//    else output = fopen(get_str(arg,"out"),"w");
+//    if( output == NULL ) error("Error: unable to open ASCII output file.");
+//    for(i=0;i<n;i++)
+//    {
+//        for(j=0;j<dim;j++)
+//            fprintf(output,"%f ",segs[i*dim+j]);
+//        fprintf(output,"\n");
+//    }
+//    if( output != stdout && fclose(output) == EOF ) /* close file if needed */
+//        error("Error: unable to close file while output file.");
+//
+//    /* store region output if needed */
+//    if(is_assigned(arg,"reg"))
+//    {
+//        write_pgm_image_int(region,regX,regY,get_str(arg,"reg"));
+//        free( (void *) region );
+//    }
+//
+//    /* create EPS output if needed */
+//    if(is_assigned(arg,"epsfile"))
+//        write_eps(segs,n,dim,get_str(arg,"epsfile"),X,Y,get_double(arg,"width"));
+//
+//    /* create SVG output if needed */
+//    if(is_assigned(arg,"svgfile"))
+//        write_svg(segs,n,dim,get_str(arg,"svgfile"),X,Y,get_double(arg,"width"));
+//
+//    /* free memory */
+//    free( (void *) image );
+//    free( (void *) segs );
+//    free_arguments(arg);
 
-    /* store region output if needed */
-    if(is_assigned(arg,"reg"))
-    {
-        write_pgm_image_int(region,regX,regY,get_str(arg,"reg"));
-        free( (void *) region );
-    }
-
-    /* create EPS output if needed */
-    if(is_assigned(arg,"epsfile"))
-        write_eps(segs,n,dim,get_str(arg,"epsfile"),X,Y,get_double(arg,"width"));
-
-    /* create SVG output if needed */
-    if(is_assigned(arg,"svgfile"))
-        write_svg(segs,n,dim,get_str(arg,"svgfile"),X,Y,get_double(arg,"width"));
-
-    /* free memory */
-    free( (void *) image );
-    free( (void *) segs );
-    free_arguments(arg);
 
     return EXIT_SUCCESS;
 }

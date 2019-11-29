@@ -113,6 +113,83 @@ static char* get_next_filed(char * p , char *id , char *value)
 
 }
 
+static int get_num(FILE * f)
+{
+    int num,c;
+
+    while(isspace(c=getc(f)));
+    if(!isdigit(c)) error("Error: corrupted PGM file.");
+    num = c - '0';
+    while( isdigit(c=getc(f)) ) num = 10 * num + c - '0';
+    if( c != EOF && ungetc(c,f) == EOF )
+        error("Error: unable to 'ungetc' while reading PGM file.");
+
+    return num;
+}
+
+static void skip_whites_and_comments(FILE * f)
+{
+    int c;
+    do
+    {
+        while(isspace(c=getc(f))); /* skip spaces */
+        if(c=='#') /* skip comments */
+            while( c!='\n' && c!='\r' && c!=EOF )
+                c=getc(f);
+    }
+    while( c == '#' || isspace(c) );
+    if( c != EOF && ungetc(c,f) == EOF )
+        error("Error: unable to 'ungetc' while reading PGM file.");
+}
+
+static double * read_pgm_image_double(int * X, int * Y, char * name)
+{
+    FILE * f;
+    int c,bin;
+    int xsize,ysize,depth,x,y;
+    double * image;
+
+    /* open file */
+    if( strcmp(name,"-") == 0 ) f = stdin;
+    else f = fopen(name,"rb");                                       //用给定的模式打开文件 模式"rb"  rb 读打开一个二进制文件，只允许读数据。
+    if( f == NULL ) error("Error: unable to open input image file.");
+
+    /* read header */
+    if( getc(f) != 'P' ) error("Error: not a PGM file!");              //getc(FILE *stream)//从文件读取字符
+    if( (c=getc(f)) == '2' ) bin = FALSE;
+    else if( c == '5' ) bin = TRUE;
+    else error("Error: not a PGM file!");
+    skip_whites_and_comments(f);
+    xsize = get_num(f);            /* X size */
+    if(xsize<=0) error("Error: X size <=0, invalid PGM file\n");
+    skip_whites_and_comments(f);
+    ysize = get_num(f);            /* Y size */
+    if(ysize<=0) error("Error: Y size <=0, invalid PGM file\n");
+    skip_whites_and_comments(f);
+    depth = get_num(f);            /* depth */
+    if(depth<=0) fprintf(stderr,"Warning: depth<=0, probably invalid PGM file\n");
+    /* white before data */
+    if(!isspace(c=getc(f))) error("Error: corrupted PGM file.");
+
+    /* get memory */
+    image = (double *) calloc( (size_t) (xsize*ysize), sizeof(double) );
+    if( image == NULL ) error("Error: not enough memory.");
+
+    /* read data */
+    for(y=0;y<ysize;y++)
+        for(x=0;x<xsize;x++)
+            image[ x + y * xsize ] = bin ? (double) getc(f)
+                                         : (double) get_num(f);
+
+    /* close file if needed */
+    if( f != stdin && fclose(f) == EOF )
+        error("Error: unable to close file while reading PGM file.");
+
+    /* return image */
+    *X = xsize;
+    *Y = ysize;
+    return image;
+}
 
 
 
@@ -120,19 +197,18 @@ static char* get_next_filed(char * p , char *id , char *value)
 
 int main(int argc, char ** argv)
 {
-    std::cout <<  argc  << std::endl;
-    std::cout << argv << std::endl;
-    std::cout << &argv[1] << std::endl;
-    std::cout << argv[1][1]<< std::endl;
-    std::cout << argv[2]<< std::endl;
-    std::cout << *argv[0]<< std::endl;
-    std::cout << **argv<< std::endl;
-    std::cout << *argv[2]<< std::endl;
-    //std::cout << << std::endl;
-   if (is_id_char ( *argv[1]))
-       std::cout << "输入是字母，数字 或 “_” ."<< std::endl;
-   else
-       std::cout << "输入不是是字母，数字 或 “_” ."<< std::endl;
+
+    FILE * f;
+    int c,bin;
+    int xsize,ysize,depth,x,y;
+    double * image;
+
+    /* open file */
+    if( strcmp(argv[1],"-") == 0 ) f = stdin;
+    else f = fopen(argv[1],"rb");                                       //用给定的模式打开文件 模式"rb"  rb 读打开一个二进制文件，只允许读数据。
+    if( f == NULL ) error("Error: unable to open input image file.");
+
+
 
     return EXIT_SUCCESS;
 }

@@ -723,7 +723,7 @@ static struct arguments * process_arguments(char * desc, int argc, char ** argv)
     arg = (struct arguments *) malloc(sizeof(struct arguments));
     if( arg == NULL ) error("Error: not enough memory.");
 
-    process_argument_description(desc,arg);                                       //把desc里的东西都放到arg里面
+    process_argument_description(desc,arg);                                       //把desc里的东西都放到arg里面,即arguments里面
     evaluate_arguments(argc,argv,arg);                                            //输入部分检查
 
     /* if there are missing arguments print the 'use' information */
@@ -828,14 +828,17 @@ static void skip_whites_and_comments(FILE * f)
     int c;
     do
     {
-        while(isspace(c=getc(f))); /* skip spaces */
+        while(isspace(c=getc(f))); /* skip spaces */                        //因为当这个while循环为1的时候,就空循环了,继续读取下一个字符
+                                                                               //就把这个空格跳过了
         if(c=='#') /* skip comments */
             while( c!='\n' && c!='\r' && c!=EOF )
                 c=getc(f);
     }
     while( c == '#' || isspace(c) );
     if( c != EOF && ungetc(c,f) == EOF )
-        error("Error: unable to 'ungetc' while reading PGM file.");
+        error("Error: unable to 'ungetc' while reading PGM file.");       //C 库函数 int ungetc(int char, FILE *stream)
+                                                                               // 把字符 char（一个无符号字符）推入到指定的流 stream 中，
+                                                                               // 以便它是下一个被读取到的字符。
 }
 
 /*----------------------------------------------------------------------------*/
@@ -872,11 +875,11 @@ static double * read_pgm_image_double(int * X, int * Y, char * name)
     if( f == NULL ) error("Error: unable to open input image file.");
 
     /* read header */
-    if( getc(f) != 'P' ) error("Error: not a PGM file!");
-    if( (c=getc(f)) == '2' ) bin = FALSE;
+    if( getc(f) != 'P' ) error("Error: not a PGM file!");               //getc(FILE *stream)//从文件读取字符
+    if( (c=getc(f)) == '2' ) bin = FALSE;                                    //PGM图像有两种格式 P5是里面的数据得用char类型获取 P2是ASCII码
     else if( c == '5' ) bin = TRUE;
     else error("Error: not a PGM file!");
-    skip_whites_and_comments(f);
+    skip_whites_and_comments(f);                                              //
     xsize = get_num(f);            /* X size */
     if(xsize<=0) error("Error: X size <=0, invalid PGM file\n");
     skip_whites_and_comments(f);
