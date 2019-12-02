@@ -1042,9 +1042,10 @@ int main(int argc, char** argv)
     double * image;
     cv::Mat Image;
    // double* cv::Mat::Image ;
-    cv::Mat Image_sh;
+    cv::Mat Image_1;
+    cv::Mat Image_2;
 
-    int X,Y;
+    int X,Y,x,y;
     double * segs;
     int n;
     int dim = 7;
@@ -1054,60 +1055,70 @@ int main(int argc, char** argv)
 
     /* read input file */
 //    image = read_pgm_image_double(&X,&Y,get_str(arg,"in"));
-   * Image =  cv::imread(get_str(arg,"in")) ;
-//    cv::resize(Image, Image_sh,CvSize(6,3));
-    double * image =;
-//    X = Image.cols;
-//    Y = Image.rows;
+    Image = cv::imread(get_str(arg,"in")) ;
+//    cv::resize(Image, Image_2,CvSize(6,3));
+//    Image.convertTo(Image_1 , CV_64F);
+  //  unsigned char *image= new unsigned char[Image.rows*Image.cols];
+    X = Image.cols;
+    Y = Image.rows;
 
-//    std::cout <<Image_sh<< std::endl;
-    std::cout <<image[2]<< std::endl;
+    image = (double * ) calloc((size_t) (Image.rows*Image.cols), sizeof(double));
+    for(y=0;y<Image.rows;y++)
+        for(x=0;x<Image.cols;x++)
+            image[ x + y * Image.cols ] = Image.at<uchar>(y,x);
 
-//
-//    /* execute LSD */
-//    segs = LineSegmentDetection( &n, image, X, Y,
-//                                 get_double(arg,"scale"),
-//                                 get_double(arg,"sigma_coef"),
-//                                 get_double(arg,"quant"),
-//                                 get_double(arg,"ang_th"),
-//                                 get_double(arg,"log_eps"),
-//                                 get_double(arg,"density_th"),
-//                                 get_int(arg,"n_bins"),
-//                                 is_assigned(arg,"reg") ? &region : NULL,
-//                                 &regX, &regY );
-//
-//    /* output */
-//    if( strcmp(get_str(arg,"out"),"-") == 0 ) output = stdout;
-//    else output = fopen(get_str(arg,"out"),"w");
-//    if( output == NULL ) error("Error: unable to open ASCII output file.");
-//    for(i=0;i<n;i++)
-//    {
-//        for(j=0;j<dim;j++)
-//            fprintf(output,"%f ",segs[i*dim+j]);
-//        fprintf(output,"\n");
-//    }
-//    if( output != stdout && fclose(output) == EOF ) /* close file if needed */
-//        error("Error: unable to close file while output file.");
-//
-//    /* store region output if needed */
-//    if(is_assigned(arg,"reg"))
-//    {
-//        write_pgm_image_int(region,regX,regY,get_str(arg,"reg"));
-//        free( (void *) region );
-//    }
-//
-//    /* create EPS output if needed */
-//    if(is_assigned(arg,"epsfile"))
-//        write_eps(segs,n,dim,get_str(arg,"epsfile"),X,Y,get_double(arg,"width"));
-//
-//    /* create SVG output if needed */
-//    if(is_assigned(arg,"svgfile"))
-//        write_svg(segs,n,dim,get_str(arg,"svgfile"),X,Y,get_double(arg,"width"));
-//
-//    /* free memory */
-//    free( (void *) image );
-//    free( (void *) segs );
-//    free_arguments(arg);
+//    if (Image.isContinuous())
+//        image = Image.data;
+
+
+//    std::cout <<Image_2<< std::endl;
+//    std::cout <<*image<< std::endl;
+
+
+    /* execute LSD */
+    segs = LineSegmentDetection( &n, image, X, Y,
+                                 get_double(arg,"scale"),
+                                 get_double(arg,"sigma_coef"),
+                                 get_double(arg,"quant"),
+                                 get_double(arg,"ang_th"),
+                                 get_double(arg,"log_eps"),
+                                 get_double(arg,"density_th"),
+                                 get_int(arg,"n_bins"),
+                                 is_assigned(arg,"reg") ? &region : NULL,
+                                 &regX, &regY );
+
+    /* output */
+    if( strcmp(get_str(arg,"out"),"-") == 0 ) output = stdout;
+    else output = fopen(get_str(arg,"out"),"w");
+    if( output == NULL ) error("Error: unable to open ASCII output file.");
+    for(i=0;i<n;i++)
+    {
+        for(j=0;j<dim;j++)
+            fprintf(output,"%f ",segs[i*dim+j]);
+        fprintf(output,"\n");
+    }
+    if( output != stdout && fclose(output) == EOF ) /* close file if needed */
+        error("Error: unable to close file while output file.");
+
+    /* store region output if needed */
+    if(is_assigned(arg,"reg"))
+    {
+        write_pgm_image_int(region,regX,regY,get_str(arg,"reg"));
+        free( (void *) region );
+    }
+
+    /* create EPS output if needed */
+    if(is_assigned(arg,"epsfile"))
+        write_eps(segs,n,dim,get_str(arg,"epsfile"),X,Y,get_double(arg,"width"));
+
+    /* create SVG output if needed */
+    if(is_assigned(arg,"svgfile"))
+        write_svg(segs,n,dim,get_str(arg,"svgfile"),X,Y,get_double(arg,"width"));
+
+    /* free memory */
+    free( (void *) image );
+    free( (void *) segs );
+    free_arguments(arg);
 
 
     return EXIT_SUCCESS;
