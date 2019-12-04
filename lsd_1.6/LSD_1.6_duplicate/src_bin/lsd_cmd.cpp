@@ -41,6 +41,8 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include <fstream>
+#include <chrono>
 
 #ifndef FALSE
 #define FALSE 0
@@ -827,41 +829,47 @@ static double * read_pgm_image_double(int * X, int * Y, const char * name)
     int xsize,ysize,depth,x,y;
     double * image;
 
+
     /* open file */
-    if( strcmp(name,"-") == 0 ) f = stdin;
-    else f = fopen(name,"rb");
-    if( f == NULL ) error("Error: unable to open input image file.");
+//    if( strcmp(name,"-") == 0 ) f = stdin;
+//    else f = fopen(name,"rb");
+//    if( f == NULL ) error("Error: unable to open input image file.");
+
+    cv::Mat Image = cv::imread( name,0);
+    xsize = Image.cols;
+    ysize = Image.rows;
 
     /* read header */
-    if( getc(f) != 'P' ) error("Error: not a PGM file!");
-    if( (c=getc(f)) == '2' ) bin = FALSE;
-    else if( c == '5' ) bin = TRUE;
-    else error("Error: not a PGM file!");
-    skip_whites_and_comments(f);
-    xsize = get_num(f);            /* X size */
-    if(xsize<=0) error("Error: X size <=0, invalid PGM file\n");
-    skip_whites_and_comments(f);
-    ysize = get_num(f);            /* Y size */
-    if(ysize<=0) error("Error: Y size <=0, invalid PGM file\n");
-    skip_whites_and_comments(f);
-    depth = get_num(f);            /* depth */
-    if(depth<=0) fprintf(stderr,"Warning: depth<=0, probably invalid PGM file\n");
-    /* white before data */
-    if(!isspace(c=getc(f))) error("Error: corrupted PGM file.");
+//    if( getc(f) != 'P' ) error("Error: not a PGM file!");
+//    if( (c=getc(f)) == '2' ) bin = FALSE;
+//    else if( c == '5' ) bin = TRUE;
+//    else error("Error: not a PGM file!");
+//    skip_whites_and_comments(f);
+//    xsize = get_num(f);            /* X size */
+//    if(xsize<=0) error("Error: X size <=0, invalid PGM file\n");
+//    skip_whites_and_comments(f);
+//    ysize = get_num(f);            /* Y size */
+//    if(ysize<=0) error("Error: Y size <=0, invalid PGM file\n");
+//    skip_whites_and_comments(f);
+//    depth = get_num(f);            /* depth */
+//    if(depth<=0) fprintf(stderr,"Warning: depth<=0, probably invalid PGM file\n");
+//    /* white before data */
+//    if(!isspace(c=getc(f))) error("Error: corrupted PGM file.");
 
     /* get memory */
     image = (double *) calloc( (size_t) (xsize*ysize), sizeof(double) );
     if( image == NULL ) error("Error: not enough memory.");
 
+
+
     /* read data */
     for(y=0;y<ysize;y++)
         for(x=0;x<xsize;x++)
-            image[ x + y * xsize ] = bin ? (double) getc(f)
-                                         : (double) get_num(f);
+            image[ x + y * xsize ] = (double) Image.at<uchar>( y , x );
 
     /* close file if needed */
-    if( f != stdin && fclose(f) == EOF )
-        error("Error: unable to close file while reading PGM file.");
+//    if( f != stdin && fclose(f) == EOF )
+//        error("Error: unable to close file while reading PGM file.");
 
     /* return image */
     *X = xsize;
@@ -1037,15 +1045,16 @@ static void write_svg( double * segs, int n, int dim,
 
 int main(int argc, char** argv)
 {
+    std::chrono::steady_clock::time_point t1 = std::chrono::steady_clock::now();
     struct arguments * arg = process_arguments((char*)USE,argc,argv);
     FILE * output;
     double * image;
-    cv::Mat Image;
-   // double* cv::Mat::Image ;
-    cv::Mat Image_1;
-    cv::Mat Image_2;
 
-    int X,Y,x,y;
+    cv::Mat Image;
+    cv::Mat Image_out;
+
+    int X,Y;
+    //int x ,y ;
     double * segs;
     int n;
     int dim = 7;
@@ -1054,26 +1063,26 @@ int main(int argc, char** argv)
     int i,j;
 
     /* read input file */
-//    image = read_pgm_image_double(&X,&Y,get_str(arg,"in"));
-    Image = cv::imread(get_str(arg,"in")) ;
-//    cv::resize(Image, Image_2,CvSize(6,3));
-//    Image.convertTo(Image_1 , CV_64F);
-  //  unsigned char *image= new unsigned char[Image.rows*Image.cols];
-    X = Image.cols;
-    Y = Image.rows;
+    image = read_pgm_image_double(&X,&Y,get_str(arg,"in"));
+//    Image = cv::imread(get_str(arg,"in"),0) ;
+//
+//    X = Image.cols;
+//    Y = Image.rows;
+    std::cout << "图像宽:" << X << " " << "高:" << Y << std::endl;
+//  X = 21400;
 
-    image = (double * ) calloc((size_t) (Image.rows*Image.cols), sizeof(double));
-    for(y=0;y<Image.rows;y++)
-        for(x=0;x<Image.cols;x++)
-            image[ x + y * Image.cols ] = Image.at<uchar>(y,x);
+//    std::ofstream out ("1.xls");
+//
+//    image = (double * ) calloc((size_t) (Image.rows*Image.cols), sizeof(double));
+//    for(y=0;y<Y;y++){
+//        for(x=0;x<X;x++) {
+//            image[x + y * X] = (double) Image.at<uchar>(y, x);
+//            out << (double) Image.at<uchar>(y, x) << "\t";
+//        }
+//        out << std::endl;
+//    }
 
-//    if (Image.isContinuous())
-//        image = Image.data;
-
-
-//    std::cout <<Image_2<< std::endl;
-//    std::cout <<*image<< std::endl;
-
+//        std::cout << Image << std::endl;
 
     /* execute LSD */
     segs = LineSegmentDetection( &n, image, X, Y,
@@ -1115,12 +1124,24 @@ int main(int argc, char** argv)
     if(is_assigned(arg,"svgfile"))
         write_svg(segs,n,dim,get_str(arg,"svgfile"),X,Y,get_double(arg,"width"));
 
+    
+
     /* free memory */
     free( (void *) image );
     free( (void *) segs );
     free_arguments(arg);
 
+    std::chrono::steady_clock::time_point t2 = std::chrono::steady_clock::now();
+    std::chrono::duration<double> time_used = std::chrono::duration_cast<std::chrono::duration<double>>(t2-t1);
+    std::cout << "处理用时: " << time_used.count() << " 秒" << std::endl;
 
+//    Image = cv::imread(get_str(arg,"in"),1);
+//    cv::imshow("origin" , Image);
+
+//    cv::Mat result = cv::imread(get_str(arg,"out"),1);
+//    cv::imshow("result",result);
+
+//    cv::waitKey(0);
     return EXIT_SUCCESS;
 }
 /*----------------------------------------------------------------------------*/

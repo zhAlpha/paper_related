@@ -65,7 +65,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "../include/lsd.h"
-
+#include <time.h>
 #ifndef FALSE
 #define FALSE 0
 #endif /* !FALSE */
@@ -1077,8 +1077,15 @@ static void write_svg( double * segs, int n, int dim,
 /*----------------------------------------------------------------------------*/
 /** Main function call
  */
+
+
+
 int main(int argc, char ** argv)
 {
+    clock_t t1, t2;
+    double duration;
+    t1 = clock();
+
     struct arguments * arg = process_arguments(USE,argc,argv);
     FILE * output;
     double * image;
@@ -1138,6 +1145,10 @@ int main(int argc, char ** argv)
     free( (void *) segs );
     free_arguments(arg);
 
+    t2 = clock();
+    duration = (double)(t2 - t1) / CLOCKS_PER_SEC ;
+
+    printf("计算用时为: %lf",duration);
     return EXIT_SUCCESS;
 }
 /*----------------------------------------------------------------------------*/

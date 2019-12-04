@@ -260,7 +260,7 @@ typedef struct ntuple_list_s
   unsigned int dim;//dimension(维数)
   double * values;
 }  * ntuple_list;
-//TODO 这是typedef初始化为指针?不用写类型?
+//这是typedef初始化为指针?不用写类型?
 //初始化为指向ntuple_list_s这一个结构体的指针,结构体没法指定类型;
 //这个写法是 用typedef 定义来简化函数指针的定义,如下例:
 /**
@@ -281,7 +281,7 @@ int main(int argc, const char * argv[])
   * */
 
 /*----------------------------------------------------------------------------*/
-/** Free memory used in n-tuple 'in'.
+/** Free memory used in n-tuple 'in'.                                            //释放内存
  */
 
  static void free_ntuple_list(ntuple_list in)
@@ -294,7 +294,7 @@ int main(int argc, const char * argv[])
 
 
 /*----------------------------------------------------------------------------*/
-/** Create an n-tuple list and allocate memory for one element.
+/** Create an n-tuple list and allocate memory for one element.                 //创建一个n元数组,并为其中一个元素分配内存
     @param dim the dimension (n) of the n-tuple.
  */
 static ntuple_list new_ntuple_list(unsigned int dim)
@@ -321,7 +321,7 @@ static ntuple_list new_ntuple_list(unsigned int dim)
 }
 
 /*----------------------------------------------------------------------------*/
-/** Enlarge the allocated memory of an n-tuple list.
+/** Enlarge the allocated memory of an n-tuple list.                                //扩大一个n元数组列表的分配的内存
  */
 static void enlarge_ntuple_list(ntuple_list n_tuple)
 {
@@ -339,7 +339,7 @@ static void enlarge_ntuple_list(ntuple_list n_tuple)
 }
 
 /*----------------------------------------------------------------------------*/
-/** Add a 7-tuple to an n-tuple list.
+/** Add a 7-tuple to an n-tuple list.                                             //添加一个七元数组进去,size+1
  */
 static void add_7tuple( ntuple_list out, double v1, double v2, double v3,
                         double v4, double v5, double v6, double v7 )
@@ -379,10 +379,11 @@ static void add_7tuple( ntuple_list out, double v1, double v2, double v3,
 
     with x and y integer.
  */
+
 typedef struct image_char_s
 {
   unsigned char * data;
-  unsigned int xsize,ysize;
+  unsigned int xsize, ysize;
 } * image_char;
 
 /*----------------------------------------------------------------------------*/
