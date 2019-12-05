@@ -1135,13 +1135,15 @@ int main(int argc, char** argv)
     std::chrono::duration<double> time_used = std::chrono::duration_cast<std::chrono::duration<double>>(t2-t1);
     std::cout << "处理用时: " << time_used.count() << " 秒" << std::endl;
 
-//    Image = cv::imread(get_str(arg,"in"),1);
-//    cv::imshow("origin" , Image);
+    Image = cv::imread(get_str(arg,"in"),1);
+    cv::imshow("origin" , Image);
+    cv::waitKey(0);
 
-//    cv::Mat result = cv::imread(get_str(arg,"out"),1);
+//    cv::Mat result;
+//    result = cv::imread("1.eps",0);
 //    cv::imshow("result",result);
 
-//    cv::waitKey(0);
+    cv::waitKey(0);
     return EXIT_SUCCESS;
 }
 /*----------------------------------------------------------------------------*/
